@@ -8,3 +8,15 @@ automatic_scaling:
   target_cpu_utilization: 0.6
 
 entrypoint: npm start
+
+# Cloud SQL instance connection (Unix socket)
+beta_settings:
+  cloud_sql_instances: enhanced-oasis-481009-n3:us-central1:new-instance1
+
+# Database connection environment variables
+env_variables:
+  DB_HOST: "/cloudsql/enhanced-oasis-481009-n3:us-central1:new-instance1"
+  DB_USER: "dbuser"
+  DB_PASSWORD: "Abc@1234"
+  DB_NAME: "clientdb"
+  # DB_PORT and DB_SSL not needed for Unix socket connections
