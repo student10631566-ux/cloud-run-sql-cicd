@@ -28,8 +28,17 @@ app.get("/", async (req, res) => {
       </html>
     `);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Database connection failed");
+    console.error('Database error:', error);
+    res.status(500).send(`
+      <html>
+        <head><title>Database Error</title></head>
+        <body>
+          <h1>Database Connection Failed</h1>
+          <p><strong>Error:</strong> ${error.message}</p>
+          <p><strong>Details:</strong> ${error.stack || 'No additional details'}</p>
+        </body>
+      </html>
+    `);
   }
 });
 
