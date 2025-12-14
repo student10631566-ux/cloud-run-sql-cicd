@@ -4,19 +4,7 @@ steps:
     entrypoint: npm
     args: ["install"]
 
-  # Step 2: Run database migration
-  - name: gcr.io/cloud-builders/gcloud
-    entrypoint: bash
-    args:
-      - "-c"
-      - |
-        curl -o cloud_sql_proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.11.0/cloud-sql-proxy.linux.amd64
-        chmod +x cloud_sql_proxy
-        ./cloud_sql_proxy enhanced-oasis-481009-n3:us-central1:new-instance1 &
-        sleep 10
-        npm run migrate
-
-  # Step 3: Deploy to App Engine
+  # Step 2: Deploy to App Engine
   - name: gcr.io/cloud-builders/gcloud
     args: ["app", "deploy", "app.yaml", "--quiet"]
 
