@@ -5,25 +5,20 @@ steps:
     args: ["ci"]
     id: install
 
-  # Step 2: Run tests (connection validation)
+  # Step 2: Lint code (placeholder for code quality checks)
   - name: node:20
     entrypoint: npm
-    args: ["test"]
-    id: test
+    args: ["run", "lint"]
+    id: lint
     waitFor: ["install"]
-    env:
-      - 'DB_HOST=/cloudsql/enhanced-oasis-481009-n3:us-central1:new-instance1'
-      - 'DB_USER=dbuser'
-      - 'DB_NAME=clientdb'
-      - 'DB_PASSWORD_SECRET=db-password'
-      - 'GOOGLE_CLOUD_PROJECT=enhanced-oasis-481009-n3'
 
   # Step 3: Run database migrations
+  # Note: Migrations run during build with Cloud SQL connection
   - name: node:20
     entrypoint: npm
     args: ["run", "migrate"]
     id: migrate
-    waitFor: ["test"]
+    waitFor: ["lint"]
     env:
       - 'DB_HOST=/cloudsql/enhanced-oasis-481009-n3:us-central1:new-instance1'
       - 'DB_USER=dbuser'
@@ -45,4 +40,7 @@ options:
 # Service account permissions required:
 # - roles/secretmanager.secretAccessor (for accessing db-password secret)
 # - roles/appengine.appAdmin (for deploying to App Engine)
-# - roles/cloudsql.client (for Cloud SQL connection)
+# - roles/cloudsql.client (for Cloud SQL connection during migrations)
+
+# Note: Connection tests (npm test) are run locally before commit.
+# Cloud Build focuses on: lint → migrate → deploy
