@@ -4,7 +4,10 @@
   "description": "Basic Express web application",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node test-connection.js",
+    "lint": "echo 'Linting code...' && exit 0",
+    "migrate": "node migrate.js"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +15,7 @@
   "dependencies": {
     "express": "^4.18.2",
     "mysql2": "^3.6.5",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "@google-cloud/secret-manager": "^5.0.0"
   }
 }

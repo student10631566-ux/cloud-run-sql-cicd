@@ -1,79 +1,83 @@
 const mysql = require('mysql2/promise');
+const { getDbPassword } = require('./secrets');
 
 /**
  * Database Connection Module
  * Creates and exports a reusable database connection pool
  * Uses environment variables for configuration
  * 
- * CLOUD SQL CONNECTION:
- * This module is designed to work with Google Cloud SQL. To connect:
+ * CLOUD SQL CONNECTION WITH SECRET MANAGER:
+ * This module fetches the database password from Google Cloud Secret Manager at runtime
  * 
- * 1. For App Engine Standard Environment:
- *    - Cloud SQL connection is via Unix socket
- *    - Set DB_HOST to: /cloudsql/PROJECT_ID:REGION:INSTANCE_ID
- *    - Example: /cloudsql/my-project:us-central1:my-instance
- *    - DB_PORT is not needed for socket connections
- *    - Set DB_SSL=false (socket connections don't use SSL)
+ * 1. For App Engine (Production):
+ *    - DB_HOST: /cloudsql/PROJECT_ID:REGION:INSTANCE_ID (Unix socket)
+ *    - DB_USER: Database username
+ *    - DB_PASSWORD_SECRET: Name of secret in Secret Manager
+ *    - DB_NAME: Database name
+ *    - Password is fetched from Secret Manager at runtime
  * 
- * 2. For App Engine Flexible or Cloud Run:
- *    - Can use either Unix socket or TCP/IP
- *    - Socket: DB_HOST=/cloudsql/PROJECT_ID:REGION:INSTANCE_ID
- *    - TCP/IP: DB_HOST=INSTANCE_IP (private IP recommended)
- *    - DB_PORT=3306 (default MySQL port)
- *    - DB_SSL=true (recommended for TCP/IP connections)
+ * 2. For Local Development:
+ *    - DB_HOST: 127.0.0.1 (via Cloud SQL Proxy)
+ *    - DB_USER: Database username
+ *    - DB_PASSWORD: Password directly from .env file
+ *    - DB_NAME: Database name
  * 
  * 3. Required Environment Variables:
  *    - DB_HOST: Database hostname or socket path
  *    - DB_USER: Database username
- *    - DB_PASSWORD: Database password
+ *    - DB_PASSWORD_SECRET: Secret name (production) OR DB_PASSWORD (local)
  *    - DB_NAME: Database name
  *    - DB_PORT: Port number (optional, defaults to 3306)
  *    - DB_SSL: 'true' or 'false' (optional, defaults to false)
- * 
- * 4. Setting Environment Variables in App Engine:
- *    - Via app.yaml: Add 'env_variables' section
- *    - Via Cloud Console: App Engine > Settings > Environment Variables
- *    - Via Secret Manager: For sensitive credentials (recommended)
  */
 
 // Database configuration from environment variables
-// For local development with Cloud SQL Proxy:
-//   - Run: cloud-sql-proxy PROJECT_ID:REGION:INSTANCE_ID
-//   - Set DB_HOST=127.0.0.1, DB_PORT=3306 (or proxy's port)
-
 const dbHost = process.env.DB_HOST || 'localhost';
 const isUnixSocket = dbHost.startsWith('/cloudsql/');
 
-// Base configuration
-const dbConfig = {
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  // Connection pool settings
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-};
-
-// Configure connection based on socket vs TCP/IP
-if (isUnixSocket) {
-  // Unix socket connection (App Engine Standard)
-  dbConfig.socketPath = dbHost;
-  // No SSL needed for Unix socket connections
-} else {
-  // TCP/IP connection (Cloud Run, Flexible, or local)
-  dbConfig.host = dbHost;
-  dbConfig.port = parseInt(process.env.DB_PORT || '3306', 10);
-  // SSL configuration for TCP/IP connections
-  if (process.env.DB_SSL === 'true') {
-    dbConfig.ssl = {
-      rejectUnauthorized: false
-    };
-  }
-}
-
 // Create connection pool
 let pool = null;
+
+/**
+ * Build database configuration
+ * Fetches password from Secret Manager if needed
+ */
+async function buildDbConfig() {
+  // Fetch password from Secret Manager (or use local env var)
+  const password = await getDbPassword();
+  
+  // Base configuration
+  const config = {
+    user: process.env.DB_USER,
+    password: password,
+    database: process.env.DB_NAME,
+    // Connection pool settings
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+  };
+  
+  // Configure connection based on socket vs TCP/IP
+  if (isUnixSocket) {
+    // Unix socket connection (App Engine Standard)
+    config.socketPath = dbHost;
+    console.log(`Connecting via Unix socket: ${dbHost}`);
+  } else {
+    // TCP/IP connection (Cloud Run, Flexible, or local)
+    config.host = dbHost;
+    config.port = parseInt(process.env.DB_PORT || '3306', 10);
+    console.log(`Connecting via TCP/IP: ${config.host}:${config.port}`);
+    
+    // SSL configuration for TCP/IP connections
+    if (process.env.DB_SSL === 'true') {
+      config.ssl = {
+        rejectUnauthorized: false
+      };
+    }
+  }
+  
+  return config;
+}
 
 /**
  * Initialize database connection pool
@@ -81,20 +85,24 @@ let pool = null;
  */
 async function getPool() {
   if (!pool) {
-    // Validate required environment variables
-    if (!dbConfig.user || !dbConfig.password || !dbConfig.database) {
-      throw new Error('Missing required database environment variables: DB_USER, DB_PASSWORD, DB_NAME');
-    }
-
-    pool = mysql.createPool(dbConfig);
-    
-    // Test the connection
     try {
+      // Build configuration (includes fetching secret)
+      const dbConfig = await buildDbConfig();
+      
+      // Validate required configuration
+      if (!dbConfig.user || !dbConfig.password || !dbConfig.database) {
+        throw new Error('Missing required database configuration: DB_USER, password, DB_NAME');
+      }
+      
+      // Create the pool
+      pool = mysql.createPool(dbConfig);
+      
+      // Test the connection
       const connection = await pool.getConnection();
-      console.log('Database connection established successfully');
+      console.log('✓ Database connection established successfully');
       connection.release();
     } catch (error) {
-      console.error('Database connection failed:', error.message);
+      console.error('✗ Database connection failed:', error.message);
       throw error;
     }
   }
