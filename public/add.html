@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Client - Client Management System</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">
+        <i class="bi bi-people-fill me-2"></i>
+        Client Management System
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              <i class="bi bi-list-ul me-1"></i>All Clients
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/add.html">
+              <i class="bi bi-plus-circle me-1"></i>Add Client
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container my-4">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <!-- Page Header -->
+        <div class="d-flex align-items-center mb-4">
+          <a href="/" class="btn btn-outline-secondary me-3">
+            <i class="bi bi-arrow-left"></i>
+          </a>
+          <h1 class="mb-0">
+            <i class="bi bi-plus-circle text-primary me-2"></i>
+            Add New Client
+          </h1>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
+        <!-- Add Client Form -->
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <form id="addClientForm" novalidate>
+              <!-- Full Name -->
+              <div class="mb-3">
+                <label for="full_name" class="form-label">
+                  Full Name <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-person"></i>
+                  </span>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="full_name" 
+                    name="full_name"
+                    placeholder="Enter full name"
+                    required
+                    autocomplete="name"
+                  >
+                  <div class="invalid-feedback">
+                    Please enter a full name.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="mb-3">
+                <label for="email" class="form-label">
+                  Email Address <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-envelope"></i>
+                  </span>
+                  <input 
+                    type="email" 
+                    class="form-control" 
+                    id="email" 
+                    name="email"
+                    placeholder="Enter email address"
+                    required
+                    autocomplete="email"
+                  >
+                  <div class="invalid-feedback">
+                    Please enter a valid email address.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Phone -->
+              <div class="mb-3">
+                <label for="phone" class="form-label">
+                  Phone Number
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-telephone"></i>
+                  </span>
+                  <input 
+                    type="tel" 
+                    class="form-control" 
+                    id="phone" 
+                    name="phone"
+                    placeholder="Enter phone number"
+                    autocomplete="tel"
+                  >
+                </div>
+              </div>
+
+              <!-- Company -->
+              <div class="mb-4">
+                <label for="company" class="form-label">
+                  Company
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-building"></i>
+                  </span>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="company" 
+                    name="company"
+                    placeholder="Enter company name"
+                    autocomplete="organization"
+                  >
+                </div>
+              </div>
+
+              <!-- Required Fields Note -->
+              <p class="text-muted small mb-4">
+                <i class="bi bi-info-circle me-1"></i>
+                Fields marked with <span class="text-danger">*</span> are required.
+              </p>
+
+              <!-- Form Actions -->
+              <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                  <i class="bi bi-check-circle me-1"></i>
+                  Create Client
+                </button>
+                <a href="/" class="btn btn-outline-secondary">
+                  <i class="bi bi-x-circle me-1"></i>
+                  Cancel
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Help Text -->
+        <div class="alert alert-info mt-4" role="alert">
+          <i class="bi bi-lightbulb me-2"></i>
+          <strong>Tip:</strong> Make sure to provide accurate contact information. Email addresses must be unique.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-light text-center py-3 mt-5">
+    <div class="container">
+      <p class="text-muted mb-0">
+        <i class="bi bi-cloud-check me-1"></i>
+        Client Management System &copy; 2025 | Powered by Google Cloud Platform
+      </p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- API Client -->
+  <script src="/js/api.js"></script>
+  <!-- Client Utils -->
+  <script src="/js/clients.js"></script>
+  
+  <!-- Page-specific Script -->
+  <script>
+    const form = document.getElementById('addClientForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // Handle form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Bootstrap validation
+      if (!form.checkValidity()) {
+        e.stopPropagation();
+        form.classList.add('was-validated');
+        return;
+      }
+
+      // Additional email validation
+      const emailInput = document.getElementById('email');
+      if (!isValidEmail(emailInput.value)) {
+        emailInput.classList.add('is-invalid');
+        emailInput.nextElementSibling.textContent = 'Please enter a valid email address.';
+        return;
+      }
+
+      // Gather form data
+      const formData = {
+        full_name: document.getElementById('full_name').value.trim(),
+        email: emailInput.value.trim(),
+        phone: document.getElementById('phone').value.trim() || null,
+        company: document.getElementById('company').value.trim() || null
+      };
+
+      // Disable submit button
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Creating...';
+
+      try {
+        const newClient = await createClient(formData);
+        
+        // Show success message
+        showSuccess(`Client "${newClient.full_name}" created successfully!`);
+        
+        // Redirect to client list after 1 second
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
+        
+      } catch (error) {
+        // Show error message
+        showError(error.message);
+        
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Create Client';
+      }
+    });
+
+    // Reset validation on input
+    form.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', () => {
+        if (form.classList.contains('was-validated')) {
+          input.classList.remove('is-invalid');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+

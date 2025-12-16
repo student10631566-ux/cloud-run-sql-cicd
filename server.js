@@ -11,12 +11,15 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json()); // Parse JSON request bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
+// Serve static files from 'public' directory
+app.use(express.static('public'));
+
 // ============================================
-// HOME PAGE - HTML Response
+// API STATUS ENDPOINT
 // ============================================
 
-// Single GET route returning HTML + DB data
-app.get("/", async (req, res) => {
+// API status endpoint (moved from "/" to avoid conflict with static index.html)
+app.get("/api/status", async (req, res) => {
   try {
     const rows = await db.query("SELECT COUNT(*) AS total FROM clients");
     const totalClients = rows[0].total;

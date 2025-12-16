@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Client - Client Management System</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">
+        <i class="bi bi-people-fill me-2"></i>
+        Client Management System
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              <i class="bi bi-list-ul me-1"></i>All Clients
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/add.html">
+              <i class="bi bi-plus-circle me-1"></i>Add Client
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container my-4">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <!-- Page Header -->
+        <div class="d-flex align-items-center mb-4">
+          <a href="/" class="btn btn-outline-secondary me-3">
+            <i class="bi bi-arrow-left"></i>
+          </a>
+          <h1 class="mb-0">
+            <i class="bi bi-pencil text-primary me-2"></i>
+            Edit Client
+          </h1>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
+        <!-- Loading State -->
+        <div id="loadingContainer">
+          <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading client data...</p>
+          </div>
+        </div>
+
+        <!-- Edit Client Form -->
+        <div class="card shadow-sm" id="formCard" style="display: none;">
+          <div class="card-body p-4">
+            <form id="editClientForm" novalidate>
+              <input type="hidden" id="client_id">
+
+              <!-- Full Name -->
+              <div class="mb-3">
+                <label for="full_name" class="form-label">
+                  Full Name <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-person"></i>
+                  </span>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="full_name" 
+                    name="full_name"
+                    placeholder="Enter full name"
+                    required
+                    autocomplete="name"
+                  >
+                  <div class="invalid-feedback">
+                    Please enter a full name.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="mb-3">
+                <label for="email" class="form-label">
+                  Email Address <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-envelope"></i>
+                  </span>
+                  <input 
+                    type="email" 
+                    class="form-control" 
+                    id="email" 
+                    name="email"
+                    placeholder="Enter email address"
+                    required
+                    autocomplete="email"
+                  >
+                  <div class="invalid-feedback">
+                    Please enter a valid email address.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Phone -->
+              <div class="mb-3">
+                <label for="phone" class="form-label">
+                  Phone Number
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-telephone"></i>
+                  </span>
+                  <input 
+                    type="tel" 
+                    class="form-control" 
+                    id="phone" 
+                    name="phone"
+                    placeholder="Enter phone number"
+                    autocomplete="tel"
+                  >
+                </div>
+              </div>
+
+              <!-- Company -->
+              <div class="mb-4">
+                <label for="company" class="form-label">
+                  Company
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-building"></i>
+                  </span>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="company" 
+                    name="company"
+                    placeholder="Enter company name"
+                    autocomplete="organization"
+                  >
+                </div>
+              </div>
+
+              <!-- Created At (Read-only) -->
+              <div class="mb-4">
+                <label class="form-label text-muted">Created At</label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-calendar"></i>
+                  </span>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="created_at"
+                    readonly
+                    disabled
+                  >
+                </div>
+              </div>
+
+              <!-- Required Fields Note -->
+              <p class="text-muted small mb-4">
+                <i class="bi bi-info-circle me-1"></i>
+                Fields marked with <span class="text-danger">*</span> are required.
+              </p>
+
+              <!-- Form Actions -->
+              <div class="d-flex gap-2 flex-wrap">
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                  <i class="bi bi-check-circle me-1"></i>
+                  Update Client
+                </button>
+                <button type="button" class="btn btn-danger" id="deleteBtn">
+                  <i class="bi bi-trash me-1"></i>
+                  Delete Client
+                </button>
+                <a href="/" class="btn btn-outline-secondary">
+                  <i class="bi bi-x-circle me-1"></i>
+                  Cancel
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-light text-center py-3 mt-5">
+    <div class="container">
+      <p class="text-muted mb-0">
+        <i class="bi bi-cloud-check me-1"></i>
+        Client Management System &copy; 2025 | Powered by Google Cloud Platform
+      </p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- API Client -->
+  <script src="/js/api.js"></script>
+  <!-- Client Utils -->
+  <script src="/js/clients.js"></script>
+  
+  <!-- Page-specific Script -->
+  <script>
+    const form = document.getElementById('editClientForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const deleteBtn = document.getElementById('deleteBtn');
+    const loadingContainer = document.getElementById('loadingContainer');
+    const formCard = document.getElementById('formCard');
+    
+    let currentClient = null;
+
+    // Load client data on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      const clientId = getUrlParameter('id');
+      
+      if (!clientId) {
+        showError('No client ID provided. Redirecting to client list...');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+        return;
+      }
+
+      await loadClientData(clientId);
+    });
+
+    // Load client data from API
+    async function loadClientData(clientId) {
+      try {
+        currentClient = await getClient(clientId);
+        
+        // Populate form fields
+        document.getElementById('client_id').value = currentClient.id;
+        document.getElementById('full_name').value = currentClient.full_name;
+        document.getElementById('email').value = currentClient.email;
+        document.getElementById('phone').value = currentClient.phone || '';
+        document.getElementById('company').value = currentClient.company || '';
+        document.getElementById('created_at').value = formatDate(currentClient.created_at);
+        
+        // Show form, hide loading
+        loadingContainer.style.display = 'none';
+        formCard.style.display = 'block';
+        
+      } catch (error) {
+        loadingContainer.innerHTML = '';
+        showError(`Failed to load client: ${error.message}`, 'alertContainer');
+        
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 3000);
+      }
+    }
+
+    // Handle form submission (update)
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Bootstrap validation
+      if (!form.checkValidity()) {
+        e.stopPropagation();
+        form.classList.add('was-validated');
+        return;
+      }
+
+      // Additional email validation
+      const emailInput = document.getElementById('email');
+      if (!isValidEmail(emailInput.value)) {
+        emailInput.classList.add('is-invalid');
+        emailInput.nextElementSibling.textContent = 'Please enter a valid email address.';
+        return;
+      }
+
+      // Gather form data
+      const formData = {
+        full_name: document.getElementById('full_name').value.trim(),
+        email: emailInput.value.trim(),
+        phone: document.getElementById('phone').value.trim() || null,
+        company: document.getElementById('company').value.trim() || null
+      };
+
+      const clientId = document.getElementById('client_id').value;
+
+      // Disable submit button
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Updating...';
+
+      try {
+        const updatedClient = await updateClient(clientId, formData);
+        
+        // Show success message
+        showSuccess(`Client "${updatedClient.full_name}" updated successfully!`);
+        
+        // Redirect to client list after 1 second
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
+        
+      } catch (error) {
+        // Show error message
+        showError(error.message);
+        
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Update Client';
+      }
+    });
+
+    // Handle delete button
+    deleteBtn.addEventListener('click', async () => {
+      const clientId = document.getElementById('client_id').value;
+      const clientName = document.getElementById('full_name').value;
+      
+      if (!confirmDelete(clientName)) {
+        return;
+      }
+
+      // Disable delete button
+      deleteBtn.disabled = true;
+      deleteBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Deleting...';
+
+      try {
+        await deleteClient(clientId);
+        
+        // Show success message
+        showSuccess(`Client "${clientName}" deleted successfully!`);
+        
+        // Redirect to client list after 1 second
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
+        
+      } catch (error) {
+        // Show error message
+        showError(`Failed to delete client: ${error.message}`);
+        
+        // Re-enable delete button
+        deleteBtn.disabled = false;
+        deleteBtn.innerHTML = '<i class="bi bi-trash me-1"></i>Delete Client';
+      }
+    });
+
+    // Reset validation on input
+    form.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', () => {
+        if (form.classList.contains('was-validated')) {
+          input.classList.remove('is-invalid');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+
