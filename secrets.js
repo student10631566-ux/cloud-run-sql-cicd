@@ -46,7 +46,7 @@ async function getSecret(secretName) {
     const [version] = await client.accessSecretVersion({ name });
     
     // Extract and decode the payload
-    const secretValue = version.payload.data.toString('utf8');
+    const secretValue = version.payload.data.toString('utf8').trim();
     
     // Cache the secret
     cachedSecrets[secretName] = secretValue;

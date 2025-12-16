@@ -17,7 +17,7 @@ beta_settings:
 # DB_PASSWORD is fetched at runtime from Secret Manager (see secrets.js)
 env_variables:
   DB_HOST: "/cloudsql/enhanced-oasis-481009-n3:us-central1:new-instance1"
-  DB_USER: "dbuser"
+  DB_USER: "testuser"
   DB_NAME: "clientdb"
   DB_PASSWORD_SECRET: "db-password"  # Secret name in Secret Manager
   # DB_PORT and DB_SSL not needed for Unix socket connections
