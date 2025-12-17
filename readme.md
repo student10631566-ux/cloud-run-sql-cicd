@@ -7,8 +7,8 @@ A Node.js Express application with MySQL database integration, designed for depl
 - Express.js web server
 - MySQL database connection (Cloud SQL compatible)
 - Client information management system
-- CI/CD pipeline with Cloud Build
-- Support for both Unix socket and TCP/IP database connections
+- CI/CD pipeline with Cloud Build.
+- Support for both Unix socket and TCP/IP database connections.
 
 ## Prerequisites
 
